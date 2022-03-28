@@ -1,22 +1,19 @@
 # Kodskelett från: https://www.101computing.net/pong-tutorial-using-pygame-getting-started/
 # Import the pygame library and initialise the game engine
 import pygame
+from paddles_ball import*
+
 pygame.init()
-
-# Define some colors
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-
-# Open a new window
-size = (700, 500)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Pong")
-
-# The loop will carry on until the user exits the game (e.g. clicks the close button).
-carryOn = True
-
 # The clock will be used to control how fast the screen updates
 clock = pygame.time.Clock()
+
+# Sprites (paddles & ball)
+all_sprites = pygame.sprite.Group()
+
+paddle_one = paddles_ball()
+all_sprites.add(paddle_one)
 
 # -------- Main Program Loop -----------
 while carryOn:
@@ -26,10 +23,15 @@ while carryOn:
             carryOn = False  # Flag that we are done so we exit this loop
 
     # --- Game logic should go here
+    all_sprites.update()
 
     # --- Drawing code should go here
     # First, clear the screen to black.
-    screen.fill(BLACK)
+    screen.fill(BLUE)
+
+    # Sprites
+    all_sprites.draw(screen)
+
     # Draw the net
     pygame.draw.line(screen, WHITE, [349, 0], [349, 500], 5)
 

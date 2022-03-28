@@ -2,6 +2,7 @@
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 BLUE = (70, 130, 180)
+PURPLE = (153, 153, 255)
 
 # Open a new window
 size = (700, 500)

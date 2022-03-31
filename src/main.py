@@ -67,8 +67,8 @@ while carryOn:
 
     # Count
     myFont = pygame.font.SysFont("Open Sans", 70)
-    randNumLabel = myFont.render(str(number), 0, BLACK)
-    screen.blit(randNumLabel, (335, 330))
+    randNumLabel = myFont.render(str(number) + "/2", 0, BLACK)
+    screen.blit(randNumLabel, (320, 330))
 
     # Sprites
     all_sprites.draw(screen)

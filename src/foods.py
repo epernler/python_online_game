@@ -7,7 +7,7 @@ class foods(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((15, 15))
-        self.image.fill(BLACK)  # the color
+        self.image.fill(WHITE)  # the color
         self.rect = self.image.get_rect()
         self.rect.center = (30, size[1] - 30)
         self.pos = vec(220, 220)

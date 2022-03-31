@@ -10,11 +10,15 @@ pygame.display.set_caption("Pong")
 # The clock will be used to control how fast the screen updates
 clock = pygame.time.Clock()
 
+number = 0
+
 # Sprites (paddles & ball)
 all_sprites = pygame.sprite.Group()
 
 player_one = player()
+
 food_one = foods()
+
 all_sprites.add(player_one)
 all_sprites.add(food_one)
 
@@ -22,10 +26,11 @@ all_sprites.add(food_one)
 def check_carry(event):
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_SPACE:
-            if player_one.get_x_position() - 15 < food_one.get_x_position() < player_one.get_x_position() + 15 and player_one.get_y_position() - 15 < food_one.get_y_position() < player_one.get_y_position() + 15:
-                player_one.set_holding(True)
-                # food_one.change_color()
-                all_sprites.remove(food_one)
+            if 230 > player_one.get_y_position() or player_one.get_y_position() > 410 and 230 > player_one.get_x_position() or player_one.get_y_position() > 410:
+                if player_one.get_x_position() - 15 < food_one.get_x_position() < player_one.get_x_position() + 15 and player_one.get_y_position() - 15 < food_one.get_y_position() < player_one.get_y_position() + 15:
+                    player_one.set_holding(True)
+                    # food_one.change_color()
+                    all_sprites.remove(food_one)
 
 def check_drop(event):
     if player_one.get_holding():
@@ -35,6 +40,9 @@ def check_drop(event):
                 food_one.set_y_pos(player_one.get_y_position())
                 food_one.set_x_pos(player_one.get_x_position())
                 player_one.set_holding(False)
+                if 230 < player_one.get_y_position() < 410 and 230 < player_one.get_x_position() < 410:
+                    return 1
+    return 0
 
 # -------- Main Program Loop ----------
 
@@ -43,7 +51,7 @@ while carryOn:
     for event in pygame.event.get():  # User did something
         if event.type == pygame.QUIT:  # If user clicked close
             carryOn = False  # Flag that we are done so we exit this loop
-        check_drop(event)
+        number = number + check_drop(event)
         check_carry(event)
 
     # --- Game logic should go here
@@ -55,7 +63,12 @@ while carryOn:
     screen.fill(BLUE)
 
     # Draw the net
-    pygame.draw.line(screen, WHITE, [350, 0], [350, 500], 5)
+    pygame.draw.circle(screen, LAVENDER, [350, 350], 100)
+
+    # Count
+    myFont = pygame.font.SysFont("Open Sans", 70)
+    randNumLabel = myFont.render(str(number), 0, BLACK)
+    screen.blit(randNumLabel, (335, 330))
 
     # Sprites
     all_sprites.draw(screen)

@@ -36,6 +36,6 @@ class player(pygame.sprite.Sprite):
     def set_holding(self, bool):
         self.holding = bool
         if bool == True:
-            self.image.fill(WHITE)
+            self.image.fill(PINK)
         else:
             self.image.fill(PURPLE)

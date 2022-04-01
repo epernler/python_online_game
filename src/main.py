@@ -101,7 +101,6 @@ while carryOn:
     # --- Game logic should go here
     # --- Collision detection
     #for wall in walls:
-    #    if wall.get_x_position() + 125 > player_one.get_x_position() &&
 
     all_sprites.update()
 

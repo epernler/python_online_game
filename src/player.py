@@ -14,8 +14,8 @@ class player(pygame.sprite.Sprite):
         self.holding = False ## Holding food or not
 
     def update(self):
-        self.pos.x = pygame.mouse.get_pos()[0]
-        self.pos.y = pygame.mouse.get_pos()[1]
+        #self.pos.x = pygame.mouse.get_pos()[0]
+        #self.pos.y = pygame.mouse.get_pos()[1]
         self.rect.center = self.pos
 
     def get_y_position(self):
@@ -25,10 +25,10 @@ class player(pygame.sprite.Sprite):
         return self.rect.x
 
     def set_y_pos(self, position):
-        self.pos.y = position
+        self.pos.y = self.pos.y + position
 
     def set_x_pos(self, position):
-        self.pos.x = position
+        self.pos.x = self.pos.x + position
 
     def get_holding(self):
         return self.holding

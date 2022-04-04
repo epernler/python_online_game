@@ -58,23 +58,18 @@ class player(pygame.sprite.Sprite):
 
         # If you collide with a wall, move out based on velocity
         for wall in walls:
-            if self.rect.colliderect(wall.rect):
-                if dx > 0:  # Moving right; Hit the left side of the wall
-                    self.rect.right = wall.rect.left
-                if dx < 0:  # Moving left; Hit the right side of the wall
-                    self.rect.left = wall.rect.right
-                if dy > 0:  # Moving down; Hit the top side of the wall
-                    self.rect.bottom = wall.rect.top
-                if dy < 0:  # Moving up; Hit the bottom side of the wall
-                    self.rect.top = wall.rect.bottom
+            self.collision_check(dx, dy, wall)
 
         # Check for collision with other player
-        if self.rect.colliderect(other_player.rect):
+        self.collision_check(dx, dy, other_player)
+
+    def collision_check(self, dx, dy, obj):
+        if self.rect.colliderect(obj.rect):
             if dx > 0:  # Moving right; Hit the left side of the wall
-                self.rect.right = other_player.rect.left
+                self.rect.right = obj.rect.left
             if dx < 0:  # Moving left; Hit the right side of the wall
-                self.rect.left = other_player.rect.right
+                self.rect.left = obj.rect.right
             if dy > 0:  # Moving down; Hit the top side of the wall
-                self.rect.bottom = other_player.rect.top
+                self.rect.bottom = obj.rect.top
             if dy < 0:  # Moving up; Hit the bottom side of the wall
-                self.rect.top = other_player.rect.bottom
+                self.rect.top = obj.rect.bottom

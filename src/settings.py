@@ -1,3 +1,4 @@
+
 # Define some colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -13,3 +14,4 @@ size = (700, 500)
 
 # The loop will carry on until the user exits the game (e.g. clicks the close button).
 carryOn = True
+

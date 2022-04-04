@@ -11,16 +11,16 @@ pygame.display.set_caption("Crazy Game")
 # The clock will be used to control how fast the screen updates
 clock = pygame.time.Clock()
 
-number = 0
-
-# Sprites (paddles & ball)
+# Sprites
 all_sprites = pygame.sprite.Group()
 
 player_one = player()
+player_two = player()
 
 food_one = foods()
 food_two = foods()
 
+# Walls
 wall_one = walls()
 wall_two = walls()
 wall_three = walls()
@@ -29,6 +29,7 @@ wall_four = walls()
 walls = [wall_one, wall_two, wall_three, wall_four]
 
 all_sprites.add(player_one)
+all_sprites.add(player_two)
 all_sprites.add(food_one)
 all_sprites.add(food_two)
 all_sprites.add(wall_one)
@@ -55,6 +56,14 @@ food_one.set_y_pos(20)
 food_two.set_x_pos(680)
 food_two.set_y_pos(20)
 
+player_one.set_x_pos(300)
+player_one.set_y_pos(350)
+
+player_two.set_x_pos(350)
+player_two.set_y_pos(350)
+player_two.set_color()
+
+number = 0
 
 # -------- Functions ----------
 def check_carry(player, event, food):
@@ -85,18 +94,22 @@ while carryOn:
             carryOn = False  # Flag that we are done so we exit this loop
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
-                player_one.set_x_pos(15)
+                player_one.move(15, 0, walls, player_two)
             if event.key == pygame.K_LEFT:
-                player_one.set_x_pos(-15)
+                player_one.move(-15, 0, walls, player_two)
             if event.key == pygame.K_UP:
-                player_one.set_y_pos(-15)
+                player_one.move(0, -15, walls, player_two)
             if event.key == pygame.K_DOWN:
-                player_one.set_y_pos(15)
+                player_one.move(0, 15, walls, player_two)
 
         number = number + check_drop(player_one, event)
-        #number = number + check_drop(player_one, event)
+        number = number + check_drop(player_two, event)
+
         check_carry(player_one, event, food_one)
         check_carry(player_one, event, food_two)
+
+        check_carry(player_two, event, food_one)
+        check_carry(player_two, event, food_two)
 
     # --- Game logic should go here
     # --- Collision detection
@@ -104,20 +117,27 @@ while carryOn:
 
     all_sprites.update()
 
-    # --- Drawing code should go here
-    # First, clear the screen to black.
-    screen.fill(BLUE)
+    if number != 2:
+        # --- Drawing code should go here
+        # First, clear the screen to black.
+        screen.fill(BLUE)
 
-    # Draw the net
-    pygame.draw.circle(screen, BLACK, [350, 350], 60)
+        # Draw the net
+        pygame.draw.circle(screen, BLACK, [350, 350], 60)
 
-    # Count
-    myFont = pygame.font.SysFont("Open Sans", 70)
-    randNumLabel = myFont.render(str(number) + "/2", 0, LAVENDER)
-    screen.blit(randNumLabel, (320, 330))
+        # Count
+        myFont = pygame.font.SysFont("Open Sans", 70)
+        randNumLabel = myFont.render(str(number) + "/2", 0, LAVENDER)
+        screen.blit(randNumLabel, (320, 330))
 
-    # Sprites
-    all_sprites.draw(screen)
+        # Sprites
+        all_sprites.draw(screen)
+    else:
+        # Game win screen
+        screen.fill(PINK)
+        myFont = pygame.font.SysFont("Open Sans", 100)
+        randNumLabel = myFont.render("Win!", 0, WHITE)
+        screen.blit(randNumLabel, (300, 250))
 
     # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()

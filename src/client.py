@@ -19,7 +19,7 @@ def send_msg(msg):
     s_len += b' ' * (HEADER - len(s_len))       #
     CLIENT.send(s_len)
     CLIENT.send(m)
-    print(client.recv(2048).decode(FORMAT))
+    print(CLIENT.recv(2048).decode(FORMAT))
 
 send_msg("Hello bitch")
 send_msg(D_MSG)

@@ -3,6 +3,11 @@
 import socket
 import time
 import threading
+import pygame
+
+from player import *
+from foods import *
+from walls import *
 
 CLIENTS = 2
 PORT = 8080

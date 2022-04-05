@@ -1,6 +1,11 @@
 import socket
 import time
 import threading
+import pygame
+
+from player import *
+from foods import *
+from walls import *
 
 PORT = 8080
 HEADER = 8
@@ -19,7 +24,7 @@ def send_msg(msg):
     s_len += b' ' * (HEADER - len(s_len))       #
     CLIENT.send(s_len)
     CLIENT.send(m)
-    print(client.recv(2048).decode(FORMAT))
+    print(CLIENT.recv(2048).decode(FORMAT))
 
 send_msg("Hello bitch")
 send_msg(D_MSG)

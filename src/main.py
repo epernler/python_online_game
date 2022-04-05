@@ -66,50 +66,72 @@ player_two.set_color()
 number = 0
 
 # -------- Functions ----------
-def check_carry(player, event, food):
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_SPACE:
-            if player.get_holding() == False:
-                if player.get_x_position() - 15 < food.get_x_position() < player.get_x_position() + 15 and player.get_y_position() - 15 < food.get_y_position() < player.get_y_position() + 15:
-                    player.set_holding(True)
-                    all_sprites.remove(food)
+def check_carry(player, food):
+    if player.get_holding() == False:
+        if player.get_x_position() - 15 < food.get_x_position() < player.get_x_position() + 15 and player.get_y_position() - 15 < food.get_y_position() < player.get_y_position() + 15:
+            player.set_holding(True)
+            all_sprites.remove(food)
 
 
-def check_drop(player, event):
+def check_drop(player):
     if player.get_holding():
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                if 290 < player.get_y_position() < 410 and 290 < player.get_x_position() < 410:
-                    player.set_holding(False)
-                    all_sprites.remove(player)
-                    return 1
+        if 290 < player.get_y_position() < 410 and 290 < player.get_x_position() < 410:
+            player.set_holding(False)
+            all_sprites.remove(player)
+            return 1
     return 0
 
 # -------- Main Program Loop ----------
 
 while carryOn:
     # --- Main event loop
+    #for event in pygame.event.get():  # User did something
+        # skicka input till servern och sedan få game state från
+    #    if event.type == pygame.QUIT:  # If user clicked close
+    #        carryOn = False  # Flag that we are done so we exit this loop
+    #    if event.type == pygame.KEYDOWN:
+    #        if event.key == pygame.K_RIGHT: #input från servern player_one
+                # send to server player_one.getx 1 / 5
+    #        if event.key == pygame.K_LEFT:
+                # SEND MSG
+    #        if event.key == pygame.K_UP:
+                # SEND MSG
+    #        if event.key == pygame.K_DOWN:
+                # SEND MSG
+    #        if event.key == pygame.K_SPACE:
+                #SEND_MSG("SPACE")
+        ## SERVERN : TAR EMOT FRÅN BÅDA CLIENTERNA OCH SAMMANSTÄLLER: "ID1.UP ID2.DOWN"
+        ## IF ID == 1:
+        #       PLAYER_ONE
+        # IF ID == 2:
+        #       PLAYER_TWO
+    # ÄNDRA DETTA TILL ATT TA EMOT FRÅN SERVERN I STÄLLET FÖR ATT KOLLA KNAPPTRYCK:
     for event in pygame.event.get():  # User did something
+        # skicka input till servern och sedan få game state från
         if event.type == pygame.QUIT:  # If user clicked close
             carryOn = False  # Flag that we are done so we exit this loop
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT:
+            if event.key == pygame.K_RIGHT: #input från servern player_one
+                # send to server player_one.getx 1 / 5
                 player_one.move(15, 0, walls, player_two)
             if event.key == pygame.K_LEFT:
+                # 2 / 6
                 player_one.move(-15, 0, walls, player_two)
             if event.key == pygame.K_UP:
+                # 3 / 7
                 player_one.move(0, -15, walls, player_two)
             if event.key == pygame.K_DOWN:
+                # 4 /8
                 player_one.move(0, 15, walls, player_two)
+            if event.key == pygame.K_SPACE:
+                number = number + check_drop(player_one)
+                number = number + check_drop(player_two)
 
-        number = number + check_drop(player_one, event)
-        number = number + check_drop(player_two, event)
+                check_carry(player_one, food_one)
+                check_carry(player_one, food_two)
 
-        check_carry(player_one, event, food_one)
-        check_carry(player_one, event, food_two)
-
-        check_carry(player_two, event, food_one)
-        check_carry(player_two, event, food_two)
+                check_carry(player_two, food_one)
+                check_carry(player_two, food_two)
 
     # --- Game logic should go here
     # --- Collision detection

@@ -3,124 +3,114 @@ import time
 import threading
 import pygame
 
-from player import *
-from foods import *
-from walls import *
+from sprites import *
+from client_cmd_dict import *
 
 pygame.init()
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Crazy Game")
-# The clock will be used to control how fast the screen updates
 clock = pygame.time.Clock()
-
-# Sprites
-all_sprites = pygame.sprite.Group()
-
-player_one = player()
-player_two = player()
-
-food_one = foods()
-food_two = foods()
-
-# Walls
-wall_one = walls()
-wall_two = walls()
-wall_three = walls()
-wall_four = walls()
-
-walls = [wall_one, wall_two, wall_three, wall_four]
-
-all_sprites.add(player_one)
-all_sprites.add(player_two)
-all_sprites.add(food_one)
-all_sprites.add(food_two)
-all_sprites.add(wall_one)
-all_sprites.add(wall_two)
-all_sprites.add(wall_three)
-all_sprites.add(wall_four)
-
-#--------- Set up map -------
-wall_one.set_x_pos(200)
-wall_one.set_y_pos(200)
-
-wall_two.set_x_pos(150)
-wall_two.set_y_pos(400)
-
-wall_three.set_x_pos(550)
-wall_three.set_y_pos(300)
-
-wall_four.set_x_pos(500)
-wall_four.set_y_pos(100)
-
-food_one.set_x_pos(20)
-food_one.set_y_pos(20)
-
-food_two.set_x_pos(680)
-food_two.set_y_pos(20)
-
-player_one.set_x_pos(300)
-player_one.set_y_pos(350)
-
-player_two.set_x_pos(350)
-player_two.set_y_pos(350)
-player_two.set_color()
+in_game = True
 
 number = 0
 
 # Socket configuration
 PORT = 8080
-HEADER = 8
+HEADER = 2048
 FORMAT = "utf-8"
-D_MSG = "Client disconnected"
 HOST = socket.gethostbyname(socket.gethostname())
 ADDRESS = (HOST, PORT)
 SERVER = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-CLIENT.connect(ADDRESS)
+# Establish three way handshake
+SERVER.connect(ADDRESS)
 
 def send_msg(msg):
-    m = msg.encode(FORMAT)                      # encode message string into a byte object
-    m_len = len(m)
-    s_len = str(m_len).encode(FORMAT)           # length of message in string
-    s_len += b' ' * (HEADER - len(s_len))       #
-    SERVER.send(s_len)
-    SERVER.send(m)
-    print(SERVER.recv(2048).decode(FORMAT))
+    try:
+        print("send_msg()")
+        SERVER.send(str.encode(msg))
+        return SERVER.recv(HEADER).decode()
+    except socket.error as e:
+        print(e)
+
+
+# -------- Functions ----------
+
+def set_otherplayer_position(tuple):
+    other_player.set_x_pos(tuple[0])
+    other_player.set_y_pos(tuple[1])
+
+def read_pos(str):
+    str = str.split(",")
+    return int(str[0]), int(str[1])
+
+def make_pos(tup):
+    return str(tup[0]) + "," + str(tup[1])
+
+def check_carry(player, food):
+    if not player.get_holding():                                           # om player inte håller i rektangeln
+        if player.get_x_pos() - 15 < food.get_x_pos() < player.get_x_pos() + 15 and player.get_y_pos() - 15 < food.get_y_pos() < player.get_y_pos() + 15:
+            player.set_holding(True)                                            # och är på rektangeln så håller playern nu maten, den försvinner
+            all_sprites.remove(food)
+
+def check_drop(player):
+    if player.get_holding():                                                    # if you carry rectangle
+        if 290 < player.get_y_pos() < 410 and 290 < player.get_x_pos() < 410:   # if your pos is middle circle
+            player.set_holding(False)                                           # you're not holding no more
+            all_sprites.remove(player)                                          # you are removed from game
+            return 1                                                            # when both players have done this the game stops redrawing since num=2
+    return 0                                                                    # otherwise return 0 and continue on
+
+msg = SERVER.recv(HEADER).decode(FORMAT)
+if msg == "ASSIGNED_PLAYER_1":
+    this_player = player_one
+    other_player = player_two
+    print("assigned player one")
+elif msg == "ASSIGNED_PLAYER_2":
+    this_player = player_two
+    other_player = player_one
+    print("assigned player two")
 
 while in_game:
-
-    # keyevents här, för varje så skickas iväg ett specifikt meddelande som definieras i server
-
-    for event in pygame.event.get():  # User did something
-        # skicka input till servern och sedan få game state från
-        if event.type == pygame.QUIT:  # If user clicked close
-            carryOn = False  # Flag that we are done so we exit this loop
+    print("got here1")
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            in_game = False
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT: #input från servern player_one
-                # send to server player_one.getx 1 / 5
-                player_one.move(15, 0, walls, player_two)
+            if event.key == pygame.K_RIGHT:
+                this_player.move(15, 0, walls, other_player)
             if event.key == pygame.K_LEFT:
-                # 2 / 6
-                player_one.move(-15, 0, walls, player_two)
+                this_player.move(-15, 0, walls, other_player)
             if event.key == pygame.K_UP:
-                # 3 / 7
-                player_one.move(0, -15, walls, player_two)
+                this_player.move(0, -15, walls, other_player)
             if event.key == pygame.K_DOWN:
-                # 4 /8
-                player_one.move(0, 15, walls, player_two)
+                this_player.move(0, 15, walls, other_player)
             if event.key == pygame.K_SPACE:
-                number = number + check_drop(player_one)
+                number = number + check_drop(player_one)  # check if returned block to middle for both players
                 number = number + check_drop(player_two)
 
-                check_carry(player_one, food_one)
+                check_carry(player_one, food_one)  # check if on food and in that case eat it
                 check_carry(player_one, food_two)
 
                 check_carry(player_two, food_one)
                 check_carry(player_two, food_two)
 
+    pos = make_pos((this_player.get_x_pos(), this_player.get_y_pos()))
+    print("sending position" + pos)
+    reply = send_msg(pos)
+    print("recieving position")
+    print(reply)
+    print(reply)
+    print("changing reply position")
+    try:
+        set_otherplayer_position(read_pos(reply))
+    except:
+        pass
+    print("redraw window and tick clock")
     all_sprites.update()
 
-    if number != 2:
+    #if number != 2:
+    if True:
         # --- Drawing code should go here
         # First, clear the screen to black.
         screen.fill(BLUE)

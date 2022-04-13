@@ -16,10 +16,10 @@ class foods(pygame.sprite.Sprite):
     def update(self):
         self.rect.center = self.pos
 
-    def get_y_position(self):
+    def get_y_pos(self):
         return self.rect.y
 
-    def get_x_position(self):
+    def get_x_pos(self):
         return self.rect.x
 
     def set_y_pos(self, position):

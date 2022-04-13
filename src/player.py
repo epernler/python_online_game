@@ -20,10 +20,10 @@ class player(pygame.sprite.Sprite):
     def set_color(self):
         self.image.fill(LIGHT_PINK)
 
-    def get_y_position(self):
+    def get_y_pos(self):
         return self.rect.y
 
-    def get_x_position(self):
+    def get_x_pos(self):
         return self.rect.x
 
     def set_y_pos(self, position):

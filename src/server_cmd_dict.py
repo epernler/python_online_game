@@ -1,9 +1,9 @@
 def p1_f1():
-    return "P1_F1"
+    return "F1_P1"
 
 
 def p1_f2():
-    return "P1_F2"
+    return "F1"
 
 
 def p2_f1():

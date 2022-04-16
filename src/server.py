@@ -24,43 +24,36 @@ def read_pos(str):
 def make_pos(tup):
     return str(tup[0]) + "," + str(tup[1])
 
-#def set_game_state(data):
-
-#    return
-
+# Våra klienters position och space - variabler
 pos = [(300, 350), (350, 350)]
+space = [False, False]
 
-
-def connect_client(c, a, p):
-    print(f"[New connection] {a} connected")                # c is a connection object we use to communicate with each connection
-    c.send(str.encode(f"ASSIGNED_PLAYER_{p}"))
+def connect_client(c, a, p):                            # Vi kör denna metod i en thread för varje klient
+    other_p = 2 if p == 1 else 1
+    print(f"[New connection] {a} connected")
+    c.send(str.encode(f"ASSIGNED_PLAYER_{p}"))          # Vi låter klienten veta vilken spelare de är
+    reply = ""
     while True:
-        try:
-            print("receiving message...")
-            data = read_pos(c.recv(HEADER).decode(FORMAT))       # stuck
-            #for x in [1, 2, 4, 5, 6]:
-            #    if switch(x) == data:
-            #        reply = set_game_state(data)
-            print("recieved message" + make_pos(data) + "p: " + f"{p}" + f"{data}")
-            pos[p - 1] = data                              # uppdatera position
-            print("updated position" + f"{pos[p-1]}")
-            if not data:                                         # avoid error since theres a connection message that cant convert to int
-                print("Disconnected client")
-                break
-            else:
-                if data == D_MSG:
-                    print(D_MSG)
+        try:                                        # Try undviker att allt kraschar ifall ett meddelande inte går att ta emot / skickas
+            data = c.recv(HEADER).decode(FORMAT)    # Vi tar emot meddelande från klienten
+            if space[other_p - 1]:                  # Ifall den andra spelaren har klickat space...
+                c.sendall(str.encode("SPACE"))      # Så skickar vi "SPACE" till denna klient, istället för andra spelarens position
+                space[other_p - 1] = False          # Återställer andra spelarens space-variabel
+            else:                                   # Annars skickar vi andra spelarens position
+                if not data:
+                    print("Disconnected client")
                     break
-                if p == 1:      # if we are player two we send ones position and vice versa
-                    reply = pos[1]
-                    print("reply to: " + f"{p+1} position: " + make_pos(reply))
                 else:
-                    reply = pos[0]
-                    print("reply to: " + f"{p-1} position: " + make_pos(reply))
-                print("Recieved: ", data)
-                print("Sending: ", reply)
-            print("reply:" + f"{str.encode(make_pos(reply))}")
-            c.sendall(str.encode(make_pos(reply)))
+                    if data == D_MSG:
+                        print("Client disconnected")
+                        break
+                    if data == "SPACE":                     # Ifall klienten klickat space
+                        space[p - 1] = True                 # ... så ser vi till att den andra klienten kan läsa det nästa loop
+                    else:
+                        data = read_pos(data)               # Annars, om klienten inte klickat space så läser vi in klientens position
+                        pos[p - 1] = data                   # ... och uppdaterar den
+                    reply = pos[1] if p == 1 else pos[0]
+                    c.sendall(str.encode(make_pos(reply)))  # vi skickar som den andra klientens position som svar
         except:
             break
     print("Lost connection")
@@ -76,5 +69,4 @@ while True:
     curr_player += 1
     thread = threading.Thread(target=connect_client, args=(conn, addr, curr_player))
     thread.start()
-    #conn.send(str.encode(f"ASSIGNED_PLAYER_{threading.active_count() - 1}"))
     print(f"[Active connections] {threading.active_count() - 1}")

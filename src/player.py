@@ -13,10 +13,6 @@ class player(pygame.sprite.Sprite):
         #self.pos = vec(30, size[1] - 30)
         self.holding = False ## Holding food or not
 
-    #def update(self):
-        #self.pos.x = pygame.mouse.get_pos()[0]
-        #self.pos.y = pygame.mouse.get_pos()[1]
-        #self.rect.center = self.pos
     def set_color(self):
         self.image.fill(LIGHT_PINK)
 

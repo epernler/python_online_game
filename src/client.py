@@ -105,13 +105,15 @@ elif msg == "ASSIGNED_PLAYER_2":
 
 # Main game-loop
 while in_game:
-    if space == True:            # Om vi space:at skickar vi det till servern, tar emot svaret från servern och återställer sedan space variabeln
+    if space == True:            # Om vi space:at skickar vi det till servern, tar emot svaret från servern och
+        # återställer sedan space variabeln
         reply = send_msg("SPACE")
         space = False
     else:                        # Annars skickar vi vår klients position
         pos = make_pos((this_player.get_x_pos(), this_player.get_y_pos()))
         reply = send_msg(pos)
-    try:                         # Vi använder serverns svar för att uppdatera den andra klientens position eller klicka space åt den
+    try:                         # Vi använder serverns svar för att uppdatera den andra klientens position eller
+        # klicka space åt den
         if reply == "SPACE":
             number = number + check_drop(other_player)  # check if returned block to middle for both players
             if number == 1:

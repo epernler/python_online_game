@@ -66,7 +66,7 @@ curr_player = 0
 while True:
     print("Server waiting for connection...")
     conn, addr = SERVER.accept() # waits for a new connection, stores address and object that allows us to communicate back to client
-    curr_player += 1
+    curr_player = int(f"{threading.active_count()}")
     thread = threading.Thread(target=connect_client, args=(conn, addr, curr_player))
     thread.start()
-    print(f"[Active connections] {threading.active_count() - 1}")
+    print(f"[Active connections] {threading.active_count()}")

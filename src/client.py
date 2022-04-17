@@ -71,6 +71,7 @@ def event_handler():
     global number
     global win_message
     global space
+    global in_game
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             in_game = False

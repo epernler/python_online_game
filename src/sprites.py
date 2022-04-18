@@ -53,3 +53,5 @@ player_one.set_y_pos(350)
 player_two.set_x_pos(350)
 player_two.set_y_pos(350)
 player_two.set_color()
+
+D_MSG = "DISCONNECT"

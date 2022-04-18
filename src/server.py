@@ -5,8 +5,7 @@ import socket
 import time
 import threading
 
-from server_cmd_dict import *
-
+D_MSG = "DISCONNECT"
 CLIENTS = 2
 PORT = 8080
 FORMAT = "utf-8"

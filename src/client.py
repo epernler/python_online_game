@@ -6,7 +6,6 @@ import threading
 import pygame
 
 from sprites import *
-from client_cmd_dict import *
 
 space = False
 number = 0

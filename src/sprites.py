@@ -8,6 +8,7 @@ all_sprites = pygame.sprite.Group()
 player_one = player()
 player_two = player()
 
+# Food
 food_one = foods()
 food_two = foods()
 
@@ -28,7 +29,7 @@ all_sprites.add(wall_two)
 all_sprites.add(wall_three)
 all_sprites.add(wall_four)
 
-#--------- Set up map -------
+# Set up map
 wall_one.set_x_pos(200)
 wall_one.set_y_pos(200)
 

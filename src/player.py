@@ -6,13 +6,16 @@ vec = pygame.math.Vector2
 class player(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
+        # Create a surface
         self.image = pygame.Surface((30, 30))
-        self.image.fill(PURPLE)  # the color
+        # The color of the first player
+        self.image.fill(PURPLE)
         self.rect = self.image.get_rect()
         self.rect.center = (30, size[1] - 30)
-        #self.pos = vec(30, size[1] - 30)
-        self.holding = False ## Holding food or not
+        # Holding food or not
+        self.holding = False
 
+    # The color of the second player
     def set_color(self):
         self.image.fill(LIGHT_PINK)
 
@@ -31,6 +34,7 @@ class player(pygame.sprite.Sprite):
     def get_holding(self):
         return self.holding
 
+    # Change color depending on if the player is holding something or not
     def set_holding(self, bool):
         self.holding = bool
         if bool == True:
@@ -38,8 +42,8 @@ class player(pygame.sprite.Sprite):
         else:
             self.image.fill(PURPLE)
 
+    # Movement and checking for collisions
     def move(self, dx, dy, walls, other_player):
-
         # Move each axis separately. Note that this checks for collisions both times.
         if dx != 0:
             self.move_single_axis(dx, 0, walls, other_player)
@@ -47,7 +51,6 @@ class player(pygame.sprite.Sprite):
             self.move_single_axis(0, dy, walls, other_player)
 
     def move_single_axis(self, dx, dy, walls, other_player):
-
         # Move the rect
         self.rect.x += dx
         self.rect.y += dy

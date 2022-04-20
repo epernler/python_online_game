@@ -4,6 +4,7 @@ import socket
 import time
 import threading
 import pygame
+import time
 
 from sprites import *
 
@@ -116,7 +117,7 @@ while in_game:
         if reply == "SPACE":
             number = number + check_drop(other_player)  # check if returned block to middle for both players
             if number == 1:
-                win_message = "LOSE"
+                win_message = "WIN!"
             check_carry(other_player, food_one)  # check if on food and in that case eat it
             check_carry(other_player, food_two)
         else:
@@ -126,7 +127,7 @@ while in_game:
 
     all_sprites.update()
 
-    if number != 1:                     # Så länge ingen vunnit ...
+    if number != 2:                     # Så länge ingen vunnit ...
         event_handler()
         # --- Drawing code should go here
         # First, clear the screen to black.
@@ -137,7 +138,7 @@ while in_game:
 
         # Count
         myFont = pygame.font.SysFont("Open Sans", 70)
-        randNumLabel = myFont.render("GO", 0, LAVENDER)
+        randNumLabel = myFont.render(str(number)+"/2", 0, LAVENDER)
         screen.blit(randNumLabel, (320, 330))
 
         # Sprites
@@ -148,6 +149,9 @@ while in_game:
         myFont = pygame.font.SysFont("Open Sans", 100)
         randNumLabel = myFont.render(win_message, 0, WHITE)
         screen.blit(randNumLabel, (300, 250))
+        pygame.display.flip()
+        time.sleep(2)
+        in_game = False
 
     # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
